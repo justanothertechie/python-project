@@ -33,7 +33,9 @@ jobs:
       - name: Get pip cache dir
         id: pip-cache
         run: |
-          echo "::set-output name=dir::$(pip cache dir)"- name: Cache pip
+          echo "::set-output name=dir::$(pip cache dir)"
+      
+      - name: Cache pip
         uses: actions/cache@v1
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
