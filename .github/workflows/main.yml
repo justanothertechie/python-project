@@ -60,7 +60,9 @@ jobs:
       # Create the Elastic Beanstalk application
       - name: Create EBS application
         run: |
-          eb init -p python-3.6 hello-world --region us-east-1# Create the Elastic Beanstalk environment
+          eb init hello-world -p python-3.6 --region us-east-1
+      
+      # Create the Elastic Beanstalk environment
       - name: Create test environment
         run: |
           eb create test-environment
