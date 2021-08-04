@@ -3,6 +3,8 @@ name: CI
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
@@ -66,3 +68,28 @@ jobs:
       - name: Create test environment & deploy
         run: |
           (eb use test-environment && eb status test-environment && eb deploy) || eb create test-environment
+
+  securitytest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        name: Check out code
+
+    # Software Composition Analysis
+      - name: Downloading Dependency check tool
+        run: wget https://github.com/jeremylong/DependencyCheck/releases/download/v6.2.2/dependency-check-6.2.2-release.zip 
+    
+      - name: Unzipping archive and installing
+        run: unzip dependency-check-6.2.2-release.zip && ls -l && dependency-check/bin/dependency-check.sh -s .
+
+   # Automated Code Scan       
+      - name: DevSkim Scan
+        uses: microsoft/DevSkim-Action@v1
+      - uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: devskim-results.sarif
+
+  # Sensitive Information Scan
+      - name: Trufflehog Actions Scan
+        uses: edplato/trufflehog-actions-scan@master
